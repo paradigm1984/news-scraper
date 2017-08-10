@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- CSS -->
+		<link rel="stylesheet" type="text/css" href="style.css" crossorigin="anonymous">
+		<!-- BOOTSTRAP -->
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		<!-- Fonts -->
+		<link href="https://fonts.googleapis.com/css?family=PT+Serif|Playfair+Display" rel="stylesheet">
+	</head>
+
+	<body id="body">
+		<nav class="custom-nav">
+		 	<div class="container-fluid">
+    			<div class="navbar-header">
+     				 <p class="page-title"> News Scraper </p>
+    			</div>
+				<a class="navigation-link" href="#"> Saved Articles </a>
+				<a class="navigation-link" href="#"> About </a>
+				<a class="navigation-link" href="https://github.com/paradigm1984/news-scraper"> Github Repo </a>
+  			</div>
+		</nav><!-- END nav -->
+		<div class="jumbotron jumbotron-fluid">
+		  <div class="container">
+		    <h1 class="jumbo-text jumbo-header">News Scraper</h1>
+		    <p class="jumbo-text jumbo-paragraph">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+		     <button id="scrapeArticles" class="jumbo-buttons"> Scrape Articles </button>
+		      <button id="getArticles" class="jumbo-buttons"> Load Articles </button>
+		  </div>
+		</div>
+		<div id="scrapedContainer" class="container">
+			<!-- this div will be hidden until an article is clicked-->
+			<h1 id="title" class="text-center"> 
+				<a id="link" class="text-center"> </a>
+			</h1>
+			<p id="summary" class="text-center"> </p>
+			<div class="container">
+				<button id="commentBox" class="jumbo-buttons"> Comment </button>
+			</div>	
+		</div><!-- Article -->  
+		<div id="comments" class="comment-box">   
+           	<h1 class="text-center comment-title">Comments</h1>
+            <div id="articleComments">                		
+            </div>	
+            <h3 class="text-center">Add a Comment!</h3>
+            <div class="form-group">
+                <label for="commentText">Comment:</label>
+                <p><textarea id="commentText" class="form-control" rows="3" placeholder=" Your Comment"></textarea></p>
+            </div>
+            <button id="addComment" class="btn small-button ">Add / Edit</button>
+        </div><!-- Comments -->   
+		<div class="panel-footer">
+            <div id="navigation">
+            </div>        
+        </div>
+	<!-- JQuery -->
+	<script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+	<!-- My Javascript -->
+	<script type="text/javascript" src="script.js"></script>
+	</body>
+</html>

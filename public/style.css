@@ -1,0 +1,103 @@
+/* 
+fonts:
+
+font-family: 'Playfair Display', serif;
+font-family: 'PT Serif', serif;
+*/
+
+#body {
+	font-family: 'Playfair Display', serif;
+	font-weight: bolder;
+}
+
+/* Navbar */
+
+.custom-nav {
+	background-color: orange;
+	border-radius: 0px;
+	position: relative;
+    min-height: 50px;
+    border: 1px solid transparent;
+    border-bottom-width: 6px;
+	border-bottom-color: black;
+
+}
+
+.page-title {
+	float: left;
+    height: 50px;
+    padding: 15px 15px;
+    font-size: 2.3em;
+    line-height: 20px;
+    margin: 0px 10px 0px 0px;
+}
+
+.navigation-link {
+	float: left;
+	text-decoration: none;
+	color: white;
+	font-size: 1.2em;
+	padding: 15px 15px;
+	margin: 0;
+
+}
+
+/* Jumbotron */
+
+.jumbotron {
+	background-image: url("imgs/littleknobs.png");
+
+}
+
+.jumbo-text {
+	text-align: center;
+	margin-bottom: 25px;
+	font-family: 'Playfair Display', serif;
+	font-weight: bolder;
+
+}
+
+.jumbo-header {
+	font-size: 6em !important;
+}
+
+.jumbo-paragraph {
+	font-size: 2em !important;
+}
+
+.jumbo-buttons {
+	border-style: none;
+	font-size: 3.5rem;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	width: 20%;
+	color: white;
+	background-color: black;
+	border-radius: 5px;
+	margin: 2% 40% 2% 40%;
+}
+
+/* Comments */
+
+.comment-box {
+	padding: 1%;
+	background-color: orange;
+	border-radius: 5px;
+	width: 60%;
+	margin: 3% 20%;
+}
+
+.comment-title {
+	font-weight: bolder;
+}
+
+.small-button {
+	text-decoration: none;
+	border-radius: 5px;
+	background-color: black;
+	color: white;
+	margin-top: 10px;
+}
+
+
+
