@@ -12,6 +12,8 @@ $(document).ready(function() {
 	// intitially hides the div with the comments elements
 	$("#comments").addClass("hidden");
 	$("#commentBox").addClass("hidden");
+	$("#commentHeader").addClass("hidden");
+	$("#deleteComment").addClass("hidden");
 
 	// scrape the articles into the articles div on click of the button in the jumbo
 	$("#scrapeArticles").on("click",function() {
@@ -34,12 +36,14 @@ $(document).ready(function() {
 			$("#commentBox").removeClass("hidden");
 		})
 	})
-
+	
+	// button to show the comment field
 	$("#commentBox").on("click", function() {
 		$("#comments").removeClass("hidden");
 		$("#commentBox").addClass("hidden");
 	});
 
+	// add button inside the comment field
 	$("#addComment").on("click", function() {
 		$("#comments").addClass("hidden");
 		$("#commentBox").removeClass("hidden");
@@ -76,7 +80,7 @@ $(document).ready(function() {
 	});
 
 	// Delete comment from article and update comments display
-	$(document).on('click','.deletecomment', function(){
+	$("#deleteComment").on("click", function(){
 		commentId = this.id;
 		// console.log("comment id "+ commentId);
 		$.ajax({
@@ -84,12 +88,12 @@ $(document).ready(function() {
 			url:"/deletecomment/" + commentId
 		}).done(function(data){
 		})
-		showComments(articleId);
+		// showComments(articleID);
 	});	
 
 	// Function to show the articles in the DOM
 	var showArticle = function(article) {
-		console.log(article);
+		console.log("article: " + article);
 		$("#link").text(article.title);
 		$("#link").attr("src", article.link);
 		$("#summary").text(article.summary);
@@ -115,16 +119,24 @@ $(document).ready(function() {
 	}
 
 	// Function to build comments display for article
-	var showComments = function(articleId) {
+	var showComments = function(articleID) {
+		console.log("article id: " + articleID);
 		$("#comments").removeClass("hidden");
+		$("#deleteComment").removeClass("hidden");
+		$("#commentHeader").removeClass("hidden");
 		$("#articleComments").empty();
-		var commentText = '';
-		$.getJSON('comments/:'+ articleId, function(data){
+
+		$.getJSON('comments/:'+ articleID, function(data, docs){
+			console.log("data: " + data);
+			console.log("docs: " + docs);
+			console.log("data: " + articleID);
 			for(var i = 0; i < data.length; i++){
-				console.log(commentText);
-				//commentText = data.comment;
+				// $("#").text(data)
+				var commentText = commentText + '<div class="well"><span id="' + data[i].articleID + '" class="glyphicon glyphicon-remove text-danger deletecomment"></span> ' + data[i].comment + '</div>';
+				// console.log(commentText);
 			}
-			$("#articleComments").append(data.comment);
+			//console.log(data[i].comment);
+			//$("#articleComments").append(commentText);
 		});
 	}
 

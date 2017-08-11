@@ -105,38 +105,45 @@ router.get("/articles", function(req, res) {
 
 // route to load comments for one article
 router.get('/comments/:id', function(req, res){
-	Comment.find({'articleId': req.params.id}).exec(function(error, data) {
+	Comment.find({'articleID': req.params.id}).exec(function(error, data) {
 		if(error) {
 			console.log(error);
 			console.log("check your comments id route");
 		} else {
 			res.json(data);
+			console.log(data.comment);
+			console.log("pushed data to front end");
 		}	
+		console.log("id: " + req.params.id);
 	});
 });
 
 // Add comment for article
-router.post('/addcomment/:id', function(req, res){
-	console.log(req.params.id +' '+ req.body.comment);
+router.post('/addComment/:id', function(req, res){
 	Comment.create({
-		articleId: req.params.id,
-		name: req.body.name,
+		articleID: req.params.id,
 		comment: req.body.comment
 	}, function(error, docs){    
 		if(error){
-			console.log(error);			
+			console.log(error);	
+			console.log("error adding a new comment");		
 		} else {
 			console.log("New Comment Added");
+			console.log("comment: " + docs);
+			console.log("comment id: " + docs.id);
 		}
 	});
 });
 
+// https://github.com/armthepit/homework14-all-the-news/blob/master/controllers/news.js //
+
 // Delete comment for article
-router.get('/deletecomment/:id', function(req, res){
+router.get('/deleteComment/:id', function(req, res){
 	console.log(req.params.id)
 	Comment.remove({'_id': req.params.id}).exec(function(error, data){
 		if(error){
 			console.log(error);
+			console.log("error deleting your comment");	
 		} else {
 			console.log("Comment deleted");
 		}

@@ -4,10 +4,16 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 
 var CommentSchema = new Schema({
-
-  comment: {
-    type: String
-  }
+	articleID: {
+		type: String
+	},
+	comment: {
+	type: String
+	},
+	createdAt: {
+		type: Date, 
+		default: Date.now
+	}
 });
 
 var Comment = mongoose.model("comment", CommentSchema);
