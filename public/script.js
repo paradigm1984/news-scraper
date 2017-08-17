@@ -12,8 +12,10 @@ $(document).ready(function() {
 	// intitially hides the div with the comments elements
 	$("#comments").addClass("hidden");
 	$("#commentBox").addClass("hidden");
-	$("#commentHeader").addClass("hidden");
+	$("#commentsContainer").addClass("hidden");
 	$("#deleteComment").addClass("hidden");
+
+
 
 	// scrape the articles into the articles div on click of the button in the jumbo
 	$("#scrapeArticles").on("click",function() {
@@ -23,32 +25,41 @@ $(document).ready(function() {
 		});
 	})
 
+	// Scrape above
+// ------------------------------------------------------------------- //
+	
 	// load the articles into the articles div on click of the button in the jumbo
-
-	// its getting pushed to the front end which means the error in populating is
-	// here. either here in this function or in the showArticle or in the html!!!
 	$("#getArticles").on("click",function() {
-		$.getJSON("/articles", function(data) {
-			console.log(data);
+		$.getJSON("/articles/", function(data) {
+			// console.log("data from the initial article load: ", data);
+
+			// the articleList is an array of the articles which 
+			// comes in as data
 			articleList = data;
+			// article is the var for each individucal article
 			article = articleList[0];
-			showArticle(article); 
+			// runs the showArticle function on each article
+
+			articleID = article._id;
 			$("#commentBox").removeClass("hidden");
+			showArticle(article);
 		})
+		 
+		
 	})
 	
 	// button to show the comment field
-	$("#commentBox").on("click", function() {
+	$("#commentShowButton").on("click", function() {
 		$("#comments").removeClass("hidden");
 		$("#commentBox").addClass("hidden");
+		$("#commentsContainer").removeClass("hidden");
+		showArticle(article); 
+		// console.log("*** log from the commentShowButton onClick: ", article);
 	});
 
-	// add button inside the comment field
-	$("#addComment").on("click", function() {
-		$("#comments").addClass("hidden");
-		$("#commentBox").removeClass("hidden");
-	});
-
+	// front end show article & comment button toggle button above
+// ------------------------------------------------------------------- //
+	
 	// Display previous article from the array of articles
 	$(document).on('click','.previous', function(){
 		article = articleList[previousArticle];
@@ -67,38 +78,86 @@ $(document).ready(function() {
 		$("#commentBox").removeClass("hidden");
 	}); 
 
+	// front end article toggle buttons above
+// ------------------------------------------------------------------- //
+	
 	// Add comment to article and update comments display
 	$("#addComment").on("click", function() {
-		if($("#commentText").val() != "") {
-			var comment = $("#commentText").val();
-			$.post("/addcomment/" + articleID, {comment: comment}, function(e) {
-				e.preventDefault();
-			});
-			$("#commentText").val("");
-			showComments(articleID);
-		}
+
+		$("#comments").addClass("hidden");
+		$("#commentBox").removeClass("hidden");
+		// console.log(article._id);
+		
+		var comment = $("#commentText").val();
+
+		$.post("/articles/" + article._id, {
+			comment: comment
+		}, function(data) {
+			// console.log("data: ", data, "original comment: ", comment);
+		});
+		
+		//console.log("*** log from the addComment onClick: ", article);
+		// clear the field
+		$("#commentText").val("");
+
+		$.getJSON("/articles/", function(data) {
+			// console.log("data from the initial article load: ", data);
+
+			// the articleList is an array of the articles which 
+			// comes in as data
+			articleList = data;
+			// article is the var for each individucal article
+			article = articleList[0];
+			// runs the showArticle function on each article
+
+			articleID = article._id;
+
+			showArticle(article);
+		})
+		
 	});
 
-	// Delete comment from article and update comments display
-	$("#deleteComment").on("click", function(){
-		commentId = this.id;
-		// console.log("comment id "+ commentId);
-		$.ajax({
-			method: "GET",
-			url:"/deletecomment/" + commentId
-		}).done(function(data){
-		})
-		// showComments(articleID);
-	});	
 
+	var commentContainer = $("<div id='commentContainer'></div>");
+	commentContainer.addClass("comment-container hidden");
 	// Function to show the articles in the DOM
-	var showArticle = function(article) {
-		console.log("article: " + article);
-		$("#link").text(article.title);
-		$("#link").attr("src", article.link);
-		$("#summary").text(article.summary);
+	var showArticle = function(data) {
+
+		// console.log("data: ", data);
+		$("#link").text(data.title);
+		$("#link").attr("src", data.link);
+		$("#summary").text(data.summary);
 		//console.log(article.summary);
 		$("#navigation").empty();
+
+		// the commentContainer is made up at the top so it doesnt make a new one 
+		// every time you call the showArticle function. the goal here is to empty the
+		// container every time the function is called no matter what and then if
+		// theres comments they would populate -- works!
+
+		if(data.comments) {
+			// console.log("theres a comment!");
+			commentContainer.removeClass("hidden");
+			commentContainer.empty();
+
+			if(data.comments == "") {
+				console.log("theres nothing in here");
+				$("#commentHeader").addClass("hidden");
+			} else {
+				$("#commentHeader").removeClass("hidden");
+				for (var i = 0; i < data.comments.length; i++) {
+					// for each comment, put it in a p tag
+					var commentString = $("<p id='commentString'></p>").append(data.comments[i].comment);
+					// console.log("commentString: ", commentString);
+					// console.log("data.comments.comment: ", data.comments[i].comment)
+					commentContainer.append(commentString);
+					
+					// $("#articleComments").append(data.comments[i].comment);
+				}
+			}
+			$("#commentSection").append(commentContainer);
+			//console.log("data comments: ", data.comments);
+		} 
 		
 		previousArticle = currentArticle -1;
 
@@ -114,34 +173,8 @@ $(document).ready(function() {
 			$('#navigation').append('<button id="'+nextArticle+'" class="btn small-button disabled pull-right next">Next Article</button>');
 		}
 
-		articleID = article._id;
-		// showComments(articleID);
 	}
-
-	// Function to build comments display for article
-	var showComments = function(articleID) {
-		console.log("article id: " + articleID);
-		$("#comments").removeClass("hidden");
-		$("#deleteComment").removeClass("hidden");
-		$("#commentHeader").removeClass("hidden");
-		$("#articleComments").empty();
-
-		$.getJSON('comments/:'+ articleID, function(data, docs){
-			console.log("data: " + data);
-			console.log("docs: " + docs);
-			console.log("data: " + articleID);
-			for(var i = 0; i < data.length; i++){
-				// $("#").text(data)
-				var commentText = commentText + '<div class="well"><span id="' + data[i].articleID + '" class="glyphicon glyphicon-remove text-danger deletecomment"></span> ' + data[i].comment + '</div>';
-				// console.log(commentText);
-			}
-			//console.log(data[i].comment);
-			//$("#articleComments").append(commentText);
-		});
-	}
-
 
 });
-
 
 

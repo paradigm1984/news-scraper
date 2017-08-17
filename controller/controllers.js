@@ -23,7 +23,7 @@ var Article = require("../models/article.js");
 }); */ 
 
 // route to scrape from the ny times
-router.get("/scrape", function(req, res) {
+router.get("/scrape/", function(req, res) {
 	request("https://www.nytimes.com/section/world?nytmobile=0", function(error, response, html) {
 
 		if(!error && res.statusCode === 200) {
@@ -34,10 +34,13 @@ router.get("/scrape", function(req, res) {
 
 		// console.log("triggered scrape on click");
 
-		var result = [];
+		var results = [];
 
 		// FIND OUT HOW TO LIMIT THE AMOUNT OF SCRAPES
-		$(".theme-summary").each(function(i, element) {
+		$("section.highlights article.story.theme-summary").each(function(i, element) {
+			console.log('//\n// BEGIN ARTICLE ' + i + '\n//');
+			var result = {};
+			var now = new Date();
 
 			// collect the title contained in the h2 of the div of this
 			result.title = $(this).children("div").children("h2").text().trim();
@@ -51,25 +54,22 @@ router.get("/scrape", function(req, res) {
 			result.summary = $(this).children("div").children("p").first().text().trim();
 			// console.log("results for summary: " + result.summary);
 
-			// was trying to create some logic that would take out the extra empty elements
-			/* if(result.link = "undefined") {
-				return false;
-			} */
+			result.createdAt = now;
 
-			result[i] = ({
-				title: result.title,
-				link: result.link,
-				summary: result.summary
-			});
-			console.log(result[i]);
+			result.comments = [];
+
+			console.log(result);
+			console.log('//\n// END ARTICLE ' + i + '\n//');
 
 
-			Article.findOne({"title": result.title}, function(error, articleRecord) {
+			Article.findOne({ "title": result.title }, function(error, articleRecord) {
 				if(error) {
 					console.log(error);
 				} else {
 					if(articleRecord == null) {
-						Article.create(result[i], function(error, record) {
+
+						var article = new Article(result);
+						article.save(function(error, record) {
 							if(error) {
 								throw error;
 							}
@@ -80,74 +80,104 @@ router.get("/scrape", function(req, res) {
 					}
 				}
 			});
-			return i<30;
 		});
-		// res.send("Scrape Complete"); 
+
 		console.log("scrape completed");
-		// res.redirect("/");
 	});
 });
 
-// route to load the articles
-router.get("/articles", function(req, res) {
+// route to load the articles -- WORKS.
+router.get("/articles/", function(req, res) {
 	console.log("triggered article on click");
-	Article.find().sort({createdAt: -1}).exec(function(error, data) {
+	Article.find().populate("comments").sort({createdAt: -1}).exec(function(error, data) {
 		if(error) {
 			throw error;
 			console.log("check your articles route");
 		} else {
 			console.log("pushed to the front end");
 			res.json(data);
-			console.log("data: " + data);
+			console.log("vv data vv");
+			console.log(data);
+
 		} 
 	});
 });
 
+
+
+// Add comment for article or updates an existing one
+router.post('/articles/:id', function(req, res) {
+	console.log("req:")
+	console.log(req.body);
+	// REQ.BODY IS COMING UP AS AN EMPTY OBJECT
+	console.log("article._id:");
+	// console.log(article._id);
+	// creates a new comment and passes the req.body to the entry.
+	// req.body should be the articles content?
+
+	var newComment = new Comment({
+		comment: req.body.comment
+	});
+
+	console.log("newComment");
+	console.log(newComment);
+
+	// saves that note in the db
+	newComment.save(function(error, doc) {
+		if(error) {
+			console.log(error);
+		} 
+
+		console.log(doc);
+
+		Article.findOneAndUpdate({
+			_id: req.params.id
+		}, {
+			$push: {
+				"comments": doc._id
+			}
+		}, function() {
+			// finish the request - tell the frontend
+			res.json(doc);
+
+			console.log("doc: ", doc);
+			console.log("!!! added new comment to article comments array");
+		});
+
+	}).then(function(error, data) {
+		console.log("save callback: ", data);
+
+
+		//update the article by pushing the comment id to 
+		// the comment array -- j 
+	});
+});
+
 // route to load comments for one article
-router.get('/comments/:id', function(req, res){
-	Comment.find({'articleID': req.params.id}).exec(function(error, data) {
+// first it grabs the article by its _id -- WORKS.
+router.get('/articles/:id', function(req, res){
+	// finds the one that fits that id parameter
+	console.log("getting article with ID " + req.params.id)
+	Article.findOne({
+		"_id": req.params.id
+		// and populates the comments for it
+	})
+	.populate("comments")
+	.exec(function(error, data) {
 		if(error) {
 			console.log(error);
 			console.log("check your comments id route");
 		} else {
 			res.json(data);
-			console.log(data.comment);
+			console.log(data.comments);
 			console.log("pushed data to front end");
 		}	
-		console.log("id: " + req.params.id);
 	});
 });
-
-// Add comment for article
-router.post('/addComment/:id', function(req, res){
-	Comment.create({
-		articleID: req.params.id,
-		comment: req.body.comment
-	}, function(error, docs){    
-		if(error){
-			console.log(error);	
-			console.log("error adding a new comment");		
-		} else {
-			console.log("New Comment Added");
-			console.log("comment: " + docs);
-			console.log("comment id: " + docs.id);
-		}
-	});
-});
-
-// https://github.com/armthepit/homework14-all-the-news/blob/master/controllers/news.js //
 
 // Delete comment for article
 router.get('/deleteComment/:id', function(req, res){
-	console.log(req.params.id)
-	Comment.remove({'_id': req.params.id}).exec(function(error, data){
-		if(error){
-			console.log(error);
-			console.log("error deleting your comment");	
-		} else {
-			console.log("Comment deleted");
-		}
-	})
+	
 });
 
 

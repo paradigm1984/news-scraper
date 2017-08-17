@@ -22,11 +22,16 @@ var ArticleSchema = new Schema({
   createdAt: {
     type: Date, 
     default: Date.now
-  }
+  },
+  // This only saves one note's ObjectId, ref refers to the Note model
+  comments:[{
+    type: Schema.Types.ObjectId,
+    ref: "Comment"
+  }]
 });
 
 // Create the Article model with the ArticleSchema
-var Article = mongoose.model("article", ArticleSchema);
+var Article = mongoose.model("Article", ArticleSchema);
 
 // Export the model
 module.exports = Article;

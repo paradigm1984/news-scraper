@@ -67,9 +67,8 @@ font-family: 'PT Serif', serif;
 
 .jumbo-buttons {
 	border-style: none;
-	font-size: 3.5rem;
-	padding-top: 8px;
-	padding-bottom: 8px;
+	font-size: 2.5em;
+	padding: 8px 1px 8px 1px;
 	width: 20%;
 	color: white;
 	background-color: black;
@@ -79,12 +78,32 @@ font-family: 'PT Serif', serif;
 
 /* Comments */
 
+.comment-show-button {
+	border-style: none;
+	font-size: 1.5em;
+	padding: 6px 1px 6px 1px;
+	padding-bottom: 8px;
+	width: 20%;
+	color: white;
+	background-color: black;
+	border-radius: 5px;
+	margin-left: 40%;
+	margin-top: 2%;
+}
+
 .comment-box {
 	padding: 1%;
 	background-color: orange;
 	border-radius: 5px;
 	width: 60%;
 	margin: 3% 20%;
+}
+
+.comment-container {
+	text-align: center;
+	font-size: 1.3em;
+	padding: 5px 0px;
+	border-radius: 15px;
 }
 
 .comment-title {
