@@ -1,12 +1,6 @@
 # news-scraper
 
 
-### Link:
-https://news--scraper.herokuapp.com/
-
-
-# Eat-da-burger
-
 An application that scrapes news articles from a given website and allows users to leave comments on individual article posts.
 This web app utilizes the New York Times API to gather the most recent world news articles and allows a user to comment.
 
