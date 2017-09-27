@@ -3,7 +3,7 @@ var express = require('express');
 var path = require('path');
 
 // for web-scraping
-var request = require('request'); 
+var request = require('request');
 var cheerio = require('cheerio');
 
 var router = express.Router();
@@ -20,7 +20,7 @@ var Article = require("../models/article.js");
 
 /* router.get("/", function(req, res) {
 	res.redirect("/scrape");
-}); */ 
+}); */
 
 // route to scrape from the ny times
 router.get("/scrape/", function(req, res) {
@@ -89,7 +89,8 @@ router.get("/scrape/", function(req, res) {
 // route to load the articles -- WORKS.
 router.get("/articles/", function(req, res) {
 	console.log("triggered article on click");
-	Article.find().populate("comments").sort({createdAt: -1}).exec(function(error, data) {
+	Article.find().populate("comments").sort({createdAt: -1})
+	.exec(function(error, data) {
 		if(error) {
 			throw error;
 			console.log("check your articles route");
@@ -99,7 +100,7 @@ router.get("/articles/", function(req, res) {
 			console.log("vv data vv");
 			console.log(data);
 
-		} 
+		}
 	});
 });
 
@@ -126,7 +127,7 @@ router.post('/articles/:id', function(req, res) {
 	newComment.save(function(error, doc) {
 		if(error) {
 			console.log(error);
-		} 
+		}
 
 		console.log(doc);
 
@@ -148,8 +149,8 @@ router.post('/articles/:id', function(req, res) {
 		console.log("save callback: ", data);
 
 
-		//update the article by pushing the comment id to 
-		// the comment array -- j 
+		//update the article by pushing the comment id to
+		// the comment array -- j
 	});
 });
 
@@ -171,13 +172,13 @@ router.get('/articles/:id', function(req, res){
 			res.json(data);
 			console.log(data.comments);
 			console.log("pushed data to front end");
-		}	
+		}
 	});
 });
 
 // Delete comment for article
 router.get('/deleteComment/:id', function(req, res){
-	
+
 });
 
 

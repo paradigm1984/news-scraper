@@ -112,7 +112,7 @@ $(document).ready(function() {
 
 			articleID = article._id;
 
-			showArticle(article);
+			showArticle(currenArticle);
 		})
 		
 	});
